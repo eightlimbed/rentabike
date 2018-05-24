@@ -15,7 +15,6 @@ contains the following additional attributes:
     `size`: Float
     `category_ids`: List
     `price_per_day`: Int
-    `price_per_hour`: Int
 '''
 
 from models.base_model import BaseModel
@@ -26,8 +25,7 @@ class Bike(BaseModel):
     Bike model, which inherits from Base Model and contains a additional
     attributes: `city_id` (String), `user_id` (String), `latitude` (Float),
     `longitude` (Float), `name` (String), `description` (String), `color`
-    (String), `size` (Float), `category_ids` (List), `price_per_day` (Int),
-    and `price_per_hour` (Int)
+    (String), `size` (Float), `category_ids` (List), and `price_per_day` (Int).
     '''
     city_id = ''
     user_id = ''
@@ -39,4 +37,3 @@ class Bike(BaseModel):
     size = 0.0
     category_ids = []
     price_per_day = 0
-    price_per_hour = 0
