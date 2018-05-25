@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # This script sets up web servers for deployment of the web_static content
 location="\n\tlocation /rentabike_static {\n\t\talias /data/rentabike_static/current/;\n\t}\n"
-sudo apt-get update && sudo apt-get install -y nginx
+sudo apt-get update && sudo apt-get install -y nginx fabric
 sudo mkdir -p /data/rentabike_static/releases/test/
 sudo mkdir -p /data/rentabike_static/shared/
 sudo touch /data/rentabike_static/releases/test/index.html
