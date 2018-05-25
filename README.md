@@ -1,5 +1,15 @@
 ## Rent-a-Bike
 
+#### Installation
+`setup_web_servers.sh` is a bash script that installs nginx, configures
+
+#### Deployment
+With Fabric. See `fabfile.py` for configuration settings.
+```
+# From the root folder of this directory
+$ fab deploy -i <path-to-ssh-key>
+```
+
 #### Database
 This application uses [MySQL 5.7](https://dev.mysql.com/doc/relnotes/mysql/5.7/en/). The file `setup_mysql_dev.sql` in the root
 directory of this repository contains an SQL script that creates a database
