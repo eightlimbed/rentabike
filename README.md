@@ -19,7 +19,8 @@ Key | Options
 `RENTABIKE_MYSQL_DB` | 'rentabike_dev_db' of 'rentabike_test_db'
 
 #### Unit Tests
-Unit tests are located in the `/tests` directory. To run the full test suite,
+Unit tests are located in the `/tests` directory. Before running the tests, make
+sure none of the environment variables above are set. To run the full test suite,
 enter the following command from the root directory of this repository:
 
 ```
