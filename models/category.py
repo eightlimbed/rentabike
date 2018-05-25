@@ -7,12 +7,17 @@ contains the following additional attribute:
     -----------
     `name`: String
 '''
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import String, Column
+from models.bike import bike_category
+from sqlalchemy.orm import relationship
 
 
-class Category(BaseModel):
+class Category(BaseModel, Base):
     '''
     Category model, which inherits from Base Model and contains an additional
     attribute: `name` (String).
     '''
-    name = ''
+    __tablename__ = 'categories'
+    name = Column(String(128), nullable=False)
+    bike_categories = relationship('Bike', secondary=bike_category)

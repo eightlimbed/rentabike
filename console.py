@@ -8,6 +8,7 @@ following commands:
 import cmd
 import json
 from models.engine.file_storage import FileStorage
+from models.engine.db_storage import DBStorage
 from models.base_model import BaseModel
 from models.user import User
 from models.bike import Bike
@@ -15,8 +16,8 @@ from models.state import State
 from models.city import City
 from models.category import Category
 from models.review import Review
+import os
 import shlex
-
 
 class Console(cmd.Cmd):
     '''
@@ -41,15 +42,41 @@ class Console(cmd.Cmd):
         Creates a new instance of class BaseModel and saves it to storage.
         '''
         if len(args) == 0:
-            print('** class name missing **')
+            print("** class name missing **")
             return
         try:
+            # values need to be of a certain data type for DBStorage
+            ints = {'price_per_day'}
+            floats = {'latitude', 'longitude'}
+            lists = {'category_ids'}
+
             args = shlex.split(args)
             new_instance = eval(args[0])()
+            for arg in args[1:]:
+                key = arg.split('=')[0]
+                val = arg.split('=')[1]
+
+                # convert '_' to ' ' for DBStorage
+                if '_' in val:
+                    words = val.split('_')
+                    words_with_spaces = ' '.join(words)
+                    val = words_with_spaces
+
+                # change data type if needed for DBStorage
+                if key in ints:
+                    val = int(val)
+                elif key in floats:
+                    val = float(val)
+                elif key in lists:
+                    val = list(val)
+
+                # set the attributes
+                new_instance.__dict__[key] = val
+
             new_instance.save()
             print(new_instance.id)
-        except:
-            print('** class doesn\'t exist **')
+        except Exception as e:
+            print("** class doesn't exist **")
 
     def do_show(self, args):
         '''
