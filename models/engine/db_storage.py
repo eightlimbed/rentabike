@@ -1,129 +1,128 @@
 #!/usr/bin/python3
-'''
-This module contains the DBStorage class which holds all the attributes and
-methods for a MySQL database storage engine.
-
-    Attributes:
-    -----------
-    `__engine`: SQLAlchemy enginemaker
-    `__session`: SQLAlchemy sessionmaker
-
-    Methods:
-    --------
-    `all(self)`: Returns all objects in storage.
-    `new(self, obj)`: Places a new object in the storage engine.
-    `save(self)`: Saves an object to the database.
-    `reload(self)`: Reloads all tables from the database and creates a session.
-'''
-import models
-from models.city import City
-from models.state import State
-from models.category import Category
-from models.base_model import Base
-from models.user import User
-from models.bike import Bike
-from models.review import Review
+"""
+Database engine.
+"""
 import os
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
+from models.base_model import Base
+from models import base_model, category, city, bike, review, state, user
 
 
 class DBStorage:
-    '''
-    DBStorage engine class. Contains the necessary attributes and methods
-    required for a MySQL database engine using SQLAlchemy to map objects to
-    database entries.
-    '''
+    """
+    Handles long term storage of all class instances.
+    """
+    CNC = {
+        'Category': category.Category,
+        'City': city.City,
+        'Bike': bike.Bike,
+        'Review': review.Review,
+        'State': state.State,
+        'User': user.User
+    }
+
     __engine = None
     __session = None
 
     def __init__(self):
-        '''
-        DBStorage instance constructor. Gets attribute values from environment
-        variables.
-        '''
-        user = os.getenv('RENTABIKE_MYSQL_USER')
-        password = os.getenv('RENTABIKE_MYSQL_PWD')
-        host = os.getenv('RENTABIKE_MYSQL_HOST')
-        database = os.getenv('RENTABIKE_MYSQL_DB')
-
-        # Request a connection with the database once required
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.
-                                      format(user, password, host, database),
-                                      pool_pre_ping=True)
-
-        # Base gets some metadata when it is created (in models/base_model).
-        # The metadata contains all the info we need to create the tables.
-        Base.metadata.create_all(self.__engine)
-
-        # If we are testing, we will drop all the tables.
-        if os.getenv('RENTABIKE_ENV') == 'test':
+        """
+        Initializes the database connection.
+        """
+        self.__engine = create_engine(
+            'mysql+mysqldb://{}:{}@{}/{}'.format(
+                os.environ.get('RENTABIKE_MYSQL_USER'),
+                os.environ.get('RENTABIKE_MYSQL_PWD'),
+                os.environ.get('RENTABIKE_MYSQL_HOST'),
+                os.environ.get('RENTABIKE_MYSQL_DB')))
+        if os.environ.get("RENTABIKE_ENV") == 'test':
             Base.metadata.drop_all(self.__engine)
 
-        # Start talking to the db
-        Session = sessionmaker(bind=self.__engine)
-
-        # Session is a SQLAlchemy class. self.__session is an instance.
-        self.__session = Session()
-
     def all(self, cls=None):
-        '''
-        Queries all objects of a class in the database. If cls is None it
-        will display all objects in the database.
-        '''
-        all_objects = {}
-        if cls:
-            instance = models.classes[cls.__name__]
-            query = self.__session.query(instance).all()
-            for obj in query:
-                key = '{}.{}'.format(obj.__class__.__name__, obj.id)
-                all_objects[key] = obj
-        else:
-            db_list = [City, State, User, Category, Review, Bike]
-            for cls in db_list:
-                for obj in self.__session.query(cls).all():
-                    key = '{}.{}'.format(obj.__class__.__name__, obj.id)
-                    all_objects[key] = obj
-        return all_objects
+        """
+        Returns a dictionary of all objects.
+        """
+        obj_dict = {}
+        if cls is not None:
+            a_query = self.__session.query(DBStorage.CNC[cls])
+            for obj in a_query:
+                obj_ref = "{}.{}".format(type(obj).__name__, obj.id)
+                obj_dict[obj_ref] = obj
+            return obj_dict
+
+        for c in DBStorage.CNC.values():
+            a_query = self.__session.query(c)
+            for obj in a_query:
+                obj_ref = "{}.{}".format(type(obj).__name__, obj.id)
+                obj_dict[obj_ref] = obj
+        return obj_dict
 
     def new(self, obj):
-        '''
-        Adds an object to the current database session.
-        '''
+        """
+        Adds objects to current database session.
+        """
         self.__session.add(obj)
 
     def save(self):
-        '''
-        Commits an object to the current database session.
-        '''
+        """
+        Commits all changes of current database session.
+        """
         self.__session.commit()
 
+    def rollback_session(self):
+        """
+        Rollsback a session in the event of an exception.
+        """
+        self.__session.rollback()
+
     def delete(self, obj=None):
-        '''
-        Deletes an object from the current database session.
-        '''
+        """
+        Deletes an object from current database session if not None.
+        """
         if obj:
             self.__session.delete(obj)
+            self.save()
+
+    def delete_all(self):
+        """
+        Deletes all stored objects (for testing purposes).
+        """
+        for c in DBStorage.CNC.values():
+            a_query = self.__session.query(c)
+            all_objs = [obj for obj in a_query]
+            for obj in range(len(all_objs)):
+                to_delete = all_objs.pop(0)
+                to_delete.delete()
+        self.save()
 
     def reload(self):
-        '''
-        Reloads all tables in the database.
-        '''
-        user = os.getenv('RENTABIKE_MYSQL_USER')
-        password = os.getenv('RENTABIKE_MYSQL_PWD')
-        host = os.getenv('RENTABIKE_MYSQL_HOST')
-        database = os.getenv('RENTABIKE_MYSQL_DB')
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.
-                                      format(user, password, host, database),
-                                      pool_pre_ping=True)
-        from models.base_model import Base
+        """
+        Creates all tables in database & session from engine.
+        """
         Base.metadata.create_all(self.__engine)
-        Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        Session = scoped_session(Session)
-        self.__session = Session
+        self.__session = scoped_session(
+            sessionmaker(
+                bind=self.__engine,
+                expire_on_commit=False))
 
     def close(self):
-        '''
-        Ends the database session.
-        '''
+        """
+        Closes the current database session.
+        """
         self.__session.remove()
+
+    def get(self, cls, id):
+        """
+        Retrieves one object based on class name and id.
+        """
+        if cls and id:
+            fetch = "{}.{}".format(cls, id)
+            all_obj = self.all(cls)
+            return all_obj.get(fetch)
+        return None
+
+    def count(self, cls=None):
+        """
+        Returns the count of all objects in storage
+        """
+        return (len(self.all(cls)))

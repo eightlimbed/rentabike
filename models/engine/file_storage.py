@@ -17,7 +17,7 @@ methods for a JSON file storage engine.
                     Python objects.
 '''
 import json
-import models
+from models import base_model, category, city, bike, review, state, user
 
 
 class FileStorage:
@@ -25,6 +25,15 @@ class FileStorage:
     File storage engine class. Contains the necessary attributes and methods
     required for JSON serialization and deserialization of objects.
     '''
+    CNC = {
+        'BaseModel': base_model.BaseModel,
+        'Category': category.Category,
+        'City': city.City,
+        'Bike': bike.Bike,
+        'Review': review.Review,
+        'State': state.State,
+        'User': user.User
+    }
     __file_path = 'all_objects_data.json'
     __objects = {}
 
@@ -68,15 +77,16 @@ class FileStorage:
         Deserializes the objects in a JSON file (`__file_path`) and places them
         in the `__objects` dictionary.
         '''
+        path = FileStorage.__file_path
+        FileStorage.__objects = {}
         try:
-            with open(FileStorage.__file_path, 'r', encoding='utf-8') as f:
-                FileStorage.__objects = json.load(f)
-            for key, val in FileStorage.__objects.items():
-                class_name = val['__class__']
-                class_name = models.classes[class_name]
-                FileStorage.__objects[key] = class_name(**val)
-        except FileNotFoundError:
-            pass
+            with open(path, 'r', encoding='utf-8') as f:
+                new_objs = json.load(f)
+        except:
+            return
+        for o_id, d in new_objs.items():
+            k_cls = d['__class__']
+            FileStorage.__objects[o_id] = FileStorage.CNC[k_cls](**d)
 
     def delete(self, obj=None):
         '''

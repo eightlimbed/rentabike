@@ -69,7 +69,7 @@ class Bike(BaseModel, Base):
     __tablename__ = 'bikes'
     city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
     user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
-    color = Column(String(60))
+    img_url = Column(String(512))
     name = Column(String(128), nullable=False)
     description = Column(String(1024), nullable=True)
     price_per_day = Column(Integer, nullable=False, default=0)

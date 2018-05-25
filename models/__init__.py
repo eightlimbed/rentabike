@@ -17,16 +17,18 @@ from models.category import Category
 from models.review import Review
 import os
 
-classes = {'User': User, 'BaseModel': BaseModel,
-           'Bike': Bike, 'State': State,
-           'City': City, 'Category': Category,
-           'Review': Review}
 
-if os.getenv('RENTABIKE_TYPE_STORAGE') == 'db':
-    from models.engine.db_storage import DBStorage
-    storage = DBStorage()
-    storage.reload()
+'''
+CNC = { Class Name (string) : Class Type }
+'''
+
+if os.environ.get('RENTABIKE_TYPE_STORAGE') == 'db':
+    from models.engine import db_storage
+    CNC = db_storage.DBStorage.CNC
+    storage = db_storage.DBStorage()
 else:
-    from models.engine.file_storage import FileStorage
-    storage = FileStorage()
-    storage.reload()
+    from models.engine import file_storage
+    CNC = file_storage.FileStorage.CNC
+    storage = file_storage.FileStorage()
+
+storage.reload()

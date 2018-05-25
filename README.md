@@ -27,6 +27,8 @@ Key | Options
 `RENTABIKE_MYSQL_PASSWORD` | 'password'
 `RENTABIKE_MYSQL_HOST` | 'localhost'
 `RENTABIKE_MYSQL_DB` | 'rentabike_dev_db' of 'rentabike_test_db'
+`RENTABIKE_API_HOST` | '0.0.0.0' (configs in `api/v1/app.py`)
+`RENTABIKE_API_PORT` | '5000' (configs in `api/v1/app.py`)
 
 #### Unit Tests
 Unit tests are located in the `/tests` directory. Before running the tests, make
