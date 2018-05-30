@@ -1,42 +1,41 @@
 /*
- * Listens on each Category <input> field.
- * If the checkbox is checked, the category is added to an object called 'selected'
- * If the category is unchecked, it is removed from 'selected'
- * The <H4> Category tag is updated dynamically when boxes are checked/unchecked
+ * Listens on each Category and City field.
+ * If the checkbox is checked, the selection is added to a list that will be
+ * used to make an API call, and the name of the selection is rendered in the
+ * <H4> tag.
  */
+let catId = '';
+let catName = '';
+let cityId = '';
+let cityName = '';
 $(document).ready(function () {
-  let categoryIds = [];
-  let categoryNames = [];
+  $('input#cities').on('click', function () {
+    if ($(this).prop('checked')) {
+      cityName = $(this).attr('data-name');
+      cityId = $(this).attr('data-id');
+      $('.locations h4').text(cityName);
+    } else {
+      $('.locations h4').text('');
+    }
+  });
   $('input#cats').on('click', function () {
     if ($(this).prop('checked')) {
-      categoryNames.push($(this).attr('data-name'));
-      categoryIds.push($(this).attr('data-id'));
-      let txt = categoryNames.join(', ');
-      if (txt.length > 25) {
-        $('.categories h4').text(txt.substr(0, 25) + '...');
-      } else {
-        $('.categories h4').text(txt);
-      }
+      catName = $(this).attr('data-name');
+      catId = $(this).attr('data-id');
+      $('.categories h4').text(catName);
     } else {
-      let nameIndex = categoryNames.indexOf($(this).attr('data-name'));
-      let idIndex = categoryIds.indexOf($(this).attr('data-id').replace(',', ''));
-      categoryNames.splice(nameIndex, 1);
-      categoryIds.splice(idIndex, 1);
-      let txt = categoryNames.join(', ');
-      if (txt.length > 25) {
-        $('.categories h4').text(txt.substr(0, 25) + '....');
-      } else {
-        $('.categories h4').text(txt);
-      }
+      $('.categories h4').text('');
     }
   });
   $('button').click(function () {
-    let cIds = [];
-    for (let i = 0; i < categoryIds.length; i++) {
-      categoryIds[i] = categoryIds[i].replace(',', '');
-      cIds.push(categoryIds[i]);
+    let cityCat = []
+    if (cityId) {
+      cityCat.push(cityId);
     }
-    let url = 'http://0.0.0.0:5001/api/v1/bikes_by_categories/' + cIds.join(',');
+    if (catId) {
+      cityCat.push(catId);
+    }
+    let url = 'http://0.0.0.0:5001/api/v1/bikes_by_categories/' + cityCat.join(',');
     $.ajax({
       url: url,
       type: 'POST',

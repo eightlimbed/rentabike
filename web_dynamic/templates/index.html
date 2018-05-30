@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../static/scripts/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../static/scripts/search.js"></script>
     <script type="text/javascript" src="../static/scripts/api_status.js"></script>
     <script type="text/javascript" src="../static/scripts/display_results.js"></script>
@@ -22,7 +22,7 @@
     <div id="api_status"></div>
   </header>
   <header>
-      <a href="index.html"><div class="logo"></div></a>
+      <a href="http://0.0.0.0:5000/rentabike"><div class="logo"></div></a>
     </header>
     <div class="container">
         <section class="filters">
@@ -32,26 +32,23 @@
                 <h4>&nbsp;</h4>
                 <ul class="popover">
                     {% for city in cities|sort(attribute='name') %}
-                    <li><input type="checkbox", data-id={{ city.id  }},
+                    <li><input type="radio" name="cities" id="cities" data-id={{ city.id  }}
                       data-name={{ city.name  }}>{{ city.name }}</li>
                     {% endfor %}
                 </ul>
             </div>
             <div class="categories">
-                <h3>Categories of Bikes</h3>
+                <h3>Select a Bike Type</h3>
                 <h4>&nbsp;</h4>
                 <ul class="popover">
                     {% for cat in cats|sort(attribute='name') %}
-                    <li><input type="checkbox", id="cats", data-id={{ cat.id  }},
+                    <li><input type="radio" name="cats" id="cats" data-id={{ cat.id  }} 
                       data-name={{ cat.name  }}>{{ cat.name }}</li>
                     {% endfor %}
                 </ul>
             </div>
         </section>
         <section class="bikes">
-            <div class="bikes_title">
-              <h1>Results: {{ bikes|length }}</h1>
-            </div>
         </section>
     </div>
     <footer>

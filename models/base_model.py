@@ -58,7 +58,7 @@ class BaseModel:
             attr_dict['updated_at'] = datetime.strptime(
                 attr_dict['updated_at'], '%Y-%m-%d %H:%M:%S.%f'
             )
-        if STORAGE_TYPE != 'db':
+        if os.environ.get('RENTABIKE_TYPE_STORAGE') != 'db':
             attr_dict.pop('__class__', None)
         for attr, val in attr_dict.items():
             setattr(self, attr, val)

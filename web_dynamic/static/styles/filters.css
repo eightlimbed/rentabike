@@ -71,13 +71,16 @@ ul {
     background-color: #FAFAFA;
     border-top: solid #DDDDDD 1px;
     padding-bottom: 10%;
-
 }
 
-.popover li h2 {
+.popover h2 {
     font-size: 16px;
     padding: 0px;
     margin: 0px;
+}
+
+.popover li {
+  font-size: 16px;
 }
 
 .popover_list {

@@ -73,16 +73,17 @@ def bikes_by_categories(ids=None):
     Bikes route to handle POST request for bikes by amenity ids
     '''
     result = []
-    all_ids = ids.split(',')
+    ids = ids.split(',')
     all_bikes = [b for b in storage.all('Bike').values()]
     for bike in all_bikes:
-        count = 0
-        for c_id in all_ids:
-            c_ids = [cat.id for cat in bike.categories]
-            if c_id in c_ids:
-                count += 1
-        if count == len(all_ids):
-            result.append(bike)
+        cat = bike.categories[0].id
+        if len(ids) == 1:
+            if ids[0] == cat or ids[0] == bike.city_id:
+                result.append(bike)
+        elif len(ids) == 2:
+            if ids[0] == cat or ids[1] == cat:
+                if bike.city_id in ids:
+                    result.append(bike)
     return jsonify([bike.to_json() for bike in result])
 
 @app_views.route('/bikes_by_categories', methods=['POST'])
