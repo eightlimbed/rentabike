@@ -1,12 +1,20 @@
 ## Rent-a-Bike
+
+#### Screenshot
 ![screenshot](screenshot.png)
+
+#### Video Demo
+[Watch it here](https://youtu.be/RkIJYbdFe78)
 
 #### Get Started
 Run the web server on port 5000
+
 ```
 RENTABIKE_MYSQL_USER=rentabike_dev RENTABIKE_MYSQL_PWD=password RENTABIKE_MYSQL_HOST=localhost RENTABIKE_MYSQL_DB=rentabike_dev_db RENTABIKE_TYPE_STORAGE=db python3 -m web_dynamic.webapp
 ```
+
 Run the API server on port 5001
+
 ```
 RENTABIKE_MYSQL_USER=rentabike_dev RENTABIKE_MYSQL_PWD=password RENTABIKE_MYSQL_HOST=localhost RENTABIKE_MYSQL_DB=rentabike_dev_db RENTABIKE_TYPE_STORAGE=db python3 -m api.v1.app
 ```
@@ -26,18 +34,10 @@ Key | Options
 #### Console
 The console is the administrative tool used for CRUD actions. Enter the console
 with the following command:
+
 ```
 RENTABIKE_MYSQL_USER=rentabike_dev RENTABIKE_MYSQL_PWD=password RENTABIKE_MYSQL_HOST=localhost RENTABIKE_MYSQL_DB=rentabike_dev_db RENTABIKE_TYPE_STORAGE=db ./console.py
 ```
-
-#### Deployment
-With Fabric. See `fabfile.py` for configuration settings.
-```
-# From the root folder of this directory
-$ fab deploy -i <path-to-ssh-key>
-```
-`setup_web_servers.sh` is a bash script that installs nginx and configures the
-server to work with the deployment via fabric.
 
 #### Database
 This application uses [MySQL 5.7](https://dev.mysql.com/doc/relnotes/mysql/5.7/en/). The file `setup_mysql_dev.sql` in the root
@@ -48,9 +48,12 @@ both these users is 'password'. These values can be set for environment variable
 keys.
 
 To create the `rentabike_dev_db` and `rentabike_dev` user, run this command:
+
 ```
 cat setup_mysql_dev.sql | mysql -hlocalhost -uroot -p
 ```
+
+The file `populate.py` can be used to import some dummy date into your database.
 
 #### Unit Tests
 Unit tests are located in the `/tests` directory. Before running the tests, make
@@ -60,3 +63,15 @@ enter the following command from the root directory of this repository:
 ```
 python3 -m unittest discover tests
 ```
+
+#### Deployment
+With Fabric. See `fabfile.py` for configuration settings.
+
+```
+# From the root folder of this directory
+$ fab deploy -i <path-to-ssh-key>
+```
+
+`setup_web_servers.sh` is a bash script that installs nginx and configures the
+server to work with the deployment via fabric.
+
