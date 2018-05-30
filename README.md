@@ -39,6 +39,13 @@ with the following command:
 RENTABIKE_MYSQL_USER=rentabike_dev RENTABIKE_MYSQL_PWD=password RENTABIKE_MYSQL_HOST=localhost RENTABIKE_MYSQL_DB=rentabike_dev_db RENTABIKE_TYPE_STORAGE=db ./console.py
 ```
 
+#### API
+To check the status of the API:
+
+```
+curl http://0.0.0.0:5001/api/v1/status
+```
+
 #### Database
 This application uses [MySQL 5.7](https://dev.mysql.com/doc/relnotes/mysql/5.7/en/). The file `setup_mysql_dev.sql` in the root
 directory of this repository contains an SQL script that creates a database
@@ -54,6 +61,10 @@ cat setup_mysql_dev.sql | mysql -hlocalhost -uroot -p
 ```
 
 The file `populate.py` can be used to import some dummy date into your database.
+
+#### File Storage
+Executing comands with the environment variables `RENTABIKE_TYPE_STORAGE` set to
+anything other than "db" will push and pull data from a flat JSON file.
 
 #### Unit Tests
 Unit tests are located in the `/tests` directory. Before running the tests, make
@@ -75,3 +86,5 @@ $ fab deploy -i <path-to-ssh-key>
 `setup_web_servers.sh` is a bash script that installs nginx and configures the
 server to work with the deployment via fabric.
 
+#### Authors
+Lee Gaines (with contributions by John Coleman, Binita Rai, Steven Garcia, Jesse Hedden, and Linds Hemenez).
