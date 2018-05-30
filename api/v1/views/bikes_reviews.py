@@ -17,7 +17,7 @@ def reviews_per_bike(bike_id=None):
         if bike_obj is None:
             abort(404, 'Not found')
         all_reviews = storage.all('Review')
-        bike_reviews = [obj.to_json() for obj in all_reviews.values()
+        bike_reviews = [obj.to_dict() for obj in all_reviews.values()
                          if obj.bike_id == bike_id]
         return jsonify(bike_reviews)
     if request.method == 'POST':

@@ -1,7 +1,7 @@
 /*
  * Listens on each Category <input> field.
- * If the checkbox is checked, the amenity is added to an object called 'selected'
- * If the amenity is unchecked, it is removed from 'selected'
+ * If the checkbox is checked, the category is added to an object called 'selected'
+ * If the category is unchecked, it is removed from 'selected'
  * The <H4> Category tag is updated dynamically when boxes are checked/unchecked
  */
 $(document).ready(function () {
@@ -42,9 +42,12 @@ $(document).ready(function () {
       type: 'POST',
       success: function (data) {
         for (let i = 0; i < data.length; i++) {
-          let html = '<article>\n<div class="title">\n<h2>' + data[i].name + '</h2>' +
-                         '<div class="price_per_day">' + data[i].price_per_day + '</div></div>' +
-                         '<div class="description">' + data[i].description + '</div></article>';
+          let html = '<article>\n<div class="description"><h2>' + data[i].name + '</h2>' +
+                     '<div class="price_per_day">' + '$' + data[i].price_per_day + '</div>' +
+                     '<div class="desc_container">' +
+                     '<div class="bike_image"><img src="' + data[i].img_url + '">' + '</div>' +
+                     '<div class="bike_desc">' + data[i].description + 
+                     '</div></div></div></article>';
           $('section.bikes').append(html);
         }
       }

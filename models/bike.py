@@ -73,9 +73,6 @@ class Bike(BaseModel, Base):
     name = Column(String(128), nullable=False)
     description = Column(String(1024), nullable=True)
     price_per_day = Column(Integer, nullable=False, default=0)
-    latitude = Column(Float, nullable=True)
-    longitude = Column(Float, nullable=True)
-    size = Column(Float, nullable=True)
     category_ids = []
     reviews = relationship('Review', cascade='all, delete', backref='bike')
     categories = relationship('Category', secondary=bike_category,

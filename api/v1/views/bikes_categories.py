@@ -30,7 +30,7 @@ def categories_per_bike(bike_id=None):
             for amen in bike_amen_ids:
                 response.append(storage.get('Category', amen))
         bike_categories = [
-            obj.to_json() for obj in bike_categories
+            obj.to_dict() for obj in bike_categories
             ]
         return jsonify(bike_categories)
 

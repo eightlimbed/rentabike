@@ -18,6 +18,11 @@ called `rentabike_dev_db` and a user called `rentabike_dev`. The file
 both these users is 'password'. These values can be set for environment variable
 keys.
 
+To create the `rentabike_dev_db` and `rentabike_dev` user, run this command:
+```
+cat setup_mysql_dev.sql | mysql -hlocalhost -uroot -p
+```
+
 #### Environment Variables
 Key | Options
 --- | ---

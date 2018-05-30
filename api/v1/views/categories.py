@@ -14,7 +14,7 @@ def categories_no_id(category_id=None):
     '''
     if request.method == 'GET':
         all_categories = storage.all('Category')
-        all_categories = [obj.to_json() for obj in all_categories.values()]
+        all_categories = [obj.to_dict() for obj in all_categories.values()]
         return jsonify(all_categories)
     if request.method == 'POST':
         req_json = request.get_json()

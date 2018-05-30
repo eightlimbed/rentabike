@@ -14,7 +14,7 @@ def states_no_id():
     '''
     if request.method == 'GET':
         all_states = storage.all('State')
-        all_states = list(obj.to_json() for obj in all_states.values())
+        all_states = list(obj.to_dict() for obj in all_states.values())
         return jsonify(all_states)
     if request.method == 'POST':
         req_json = request.get_json()
@@ -37,7 +37,7 @@ def states_with_id(state_id=None):
     if state_obj is None:
         abort(404, 'Not found')
     if request.method == 'GET':
-        return jsonify(state_obj.to_json())
+        return jsonify(state_obj.to_dict())
     if request.method == 'DELETE':
         state_obj.delete()
         del state_obj

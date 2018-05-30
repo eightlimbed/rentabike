@@ -22,7 +22,7 @@ def bikes_per_city(city_id=None):
 
     if request.method == 'GET':
         all_bikes = storage.all('Bike')
-        city_bikes = [obj.to_json() for obj in all_bikes.values()
+        city_bikes = [obj.to_dict() for obj in all_bikes.values()
                        if obj.city_id == city_id]
         return jsonify(city_bikes)
 
@@ -74,16 +74,16 @@ def bikes_by_categories(ids=None):
     '''
     result = []
     all_ids = ids.split(',')
-    all_bikes = [p for p in storage.all('Bike').values()]
+    all_bikes = [b for b in storage.all('Bike').values()]
     for bike in all_bikes:
         count = 0
-        for a_id in all_ids:
-            amen_ids = [amen.id for amen in bike.categories]
-            if a_id in amen_ids:
+        for c_id in all_ids:
+            c_ids = [cat.id for cat in bike.categories]
+            if c_id in c_ids:
                 count += 1
         if count == len(all_ids):
             result.append(bike)
-    return jsonify([p.to_json() for p in result])
+    return jsonify([bike.to_json() for bike in result])
 
 @app_views.route('/bikes_by_categories', methods=['POST'])
 def bikes_by_categories_empty():
@@ -93,7 +93,7 @@ def bikes_by_categories_empty():
     categories. Just returns all bikes.
     '''
     all_bikes = [b for b in storage.all('Bike').values()]
-    return jsonify([b.to_dict() for b in all_bikes])
+    return jsonify([b.to_json() for b in all_bikes])
 
 @app_views.route('/bikes_search', methods=['POST'])
 def bikes_search():
@@ -120,21 +120,21 @@ def bikes_search():
     if len(state_cities) > 0:
         all_bikes = [b for b in all_bikes if b.city_id in state_cities]
     elif categories is None or len(categories) == 0:
-        result = [bike.to_dict() for bike in all_bikes]
+        result = [bike.to_json() for bike in all_bikes]
         return jsonify(result)
     bikes_categories = []
     if categories and len(categories) > 0:
         categories = set([
-            a_id for a_id in categories if storage.get('Amenity', a_id)])
-        for p in all_bikes:
-            p_categories = None
-            if STORAGE_TYPE == 'db' and p.categories:
-                p_categories = [a.id for a in p.categories]
-            elif len(p.categories) > 0:
-                p_categories = p.categories
-            if p_categories and all([a in p_categories for a in categories]):
+            c_id for c_id in categories if storage.get('Category', c_id)])
+        for b in all_bikes:
+            b_categories = None
+            if STORAGE_TYPE == 'db' and b.categories:
+                b_categories = [c.id for c in b.categories]
+            elif len(b.categories) > 0:
+                b_categories = b.categories
+            if b_categories and all([c in b_categories for c in categories]):
                 bikes_categories.append(p)
     else:
         bikes_categories = all_bikes
-    result = [bike.to_json() for bike in bikes_categories]
+    result = [bike.to_dict() for bike in bikes_categories]
     return jsonify(result)

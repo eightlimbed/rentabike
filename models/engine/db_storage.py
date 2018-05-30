@@ -125,4 +125,4 @@ class DBStorage:
         """
         Returns the count of all objects in storage
         """
-        return (len(self.all(cls)))
+        return len(self.all(cls))

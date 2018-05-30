@@ -57,13 +57,13 @@ class Console(cmd.Cmd):
         '''
         error = 0
         if len(arg) == 0:
-            print(HBNBCommand.ERR[0])
+            print(Console.ERR[0])
             error = 1
         else:
             if isinstance(arg, list):
                 arg = arg[0]
             if arg not in CNC.keys():
-                print(HBNBCommand.ERR[1])
+                print(Console.ERR[1])
                 error = 1
         return error
 
@@ -74,7 +74,7 @@ class Console(cmd.Cmd):
         error = 0
         if (len(arg) < 2):
             error += 1
-            print(HBNBCommand.ERR[2])
+            print(Console.ERR[2])
         if not error:
             storage_objs = storage.all()
             for key, value in storage_objs.items():
@@ -82,7 +82,7 @@ class Console(cmd.Cmd):
                 if temp_id == arg[1] and arg[0] in key:
                     return error
             error += 1
-            print(HBNBCommand.ERR[3])
+            print(Console.ERR[3])
         return error
 
     def do_quit(self, line):
@@ -251,9 +251,9 @@ class Console(cmd.Cmd):
             if arg[1] in k and arg[0] in k:
                 key = k
         if len(arg) < 3:
-            print(HBNBCommand.ERR[4])
+            print(Console.ERR[4])
         elif len(arg) < 4:
-            print(HBNBCommand.ERR[5])
+            print(Console.ERR[5])
         else:
             return [1, arg, d, storage_objs, key]
         return [0]

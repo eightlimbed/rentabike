@@ -18,7 +18,7 @@ def cities_per_state(state_id=None):
 
     if request.method == 'GET':
         all_cities = storage.all('City')
-        state_cities = [obj.to_json() for obj in all_cities.values()
+        state_cities = [obj.to_dict() for obj in all_cities.values()
                         if obj.state_id == state_id]
         return jsonify(state_cities)
 
